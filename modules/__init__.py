@@ -14,7 +14,7 @@ import modules.ocr as ocr
 import modules.retrieval as retrieval
 import modules.correction as correction
 from tool.config import Config 
-from tool.utils import download_pretrained_weights
+from tool.utils import download_pretrained_weights, download_pretrained_weights1
 
 
 CACHE_DIR = '.cache'
@@ -129,7 +129,7 @@ class Detection1:
             if self.model_name is None:
                 self.model_name = "pan_resnet18_default"
             tmp_path = os.path.join(CACHE_DIR, f'{self.model_name}.pth')
-            download_pretrained_weights(self.model_name, cached=tmp_path)
+            download_pretrained_weights1(self.model_name, cached=tmp_path)
             weight_path = tmp_path
         self.model = detection.PAN(config, model_path=weight_path)
         
@@ -227,7 +227,7 @@ class OCR1:
             if self.model_name is None:
                 self.model_name = "transformerocr_default_vgg"
             tmp_path = os.path.join(CACHE_DIR, f'{self.model_name}.pth')
-            download_pretrained_weights(self.model_name, cached=tmp_path)
+            download_pretrained_weights1(self.model_name, cached=tmp_path)
             weight_path = tmp_path
         ocr_config['weights'] = weight_path
         self.model = ocr.Predictor(ocr_config)
