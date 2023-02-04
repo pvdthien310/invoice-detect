@@ -2,6 +2,7 @@ import gdown
 import re
 import cv2
 import numpy as np
+import torch
 import webcolors
 import matplotlib
 import matplotlib.pyplot as plt
@@ -13,6 +14,14 @@ def download_weights(id_or_url, cached=None, md5=None, quiet=False):
         url = 'https://drive.google.com/uc?id={}'.format(id_or_url)
 
     return gdown.cached_download(url=url, path=cached, md5=md5, quiet=quiet)
+
+def download_weights1(id_or_url, cached=None, md5=None, quiet=False):
+    if id_or_url.startswith('http'):
+        url = id_or_url
+    else:
+        url = 'https://drive.google.com/uc?id={}'.format(id_or_url)
+
+    return torch.load(url,map_location ='cpu')
 
 
 weight_url = {
@@ -28,6 +37,10 @@ weight_url = {
 
 def download_pretrained_weights(name, cached=None):
     return download_weights(weight_url[name], cached)
+
+def download_pretrained_weights1(name, cached=None):
+    return download_weights1(weight_url[name], cached)
+        
     
 def natural_keys(text):
     '''
