@@ -35,7 +35,7 @@ def extract_mcocr(data_dir = "./data/mcocr_public/mcocr_train_data/", out_dir=".
                 x, y, w, h = fjson["bbox"]
                 crop_img = img[y : y + h, x : x + w]
                 if h > w:
-                    crop_img = cv2.rotate(crop_img, cv2.cv2.ROTATE_90_CLOCKWISE)
+                    crop_img = cv2.rotate(crop_img, cv2.ROTATE_90_CLOCKWISE)
 
                 save_id = f"{count:05}.jpg"
                 cv2.imwrite(f"{ocr_savedir/save_id}", crop_img)
