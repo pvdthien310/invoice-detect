@@ -86,7 +86,7 @@ def crop_box(img, boxes, out_folder, sort=True):
 class PAN:
     def __init__(self, config, model_path=None, state_dict=None):
         
-        self.device = torch.device("cpu")
+        self.device = torch.device("cuda")
         self.net = get_model(config.model)
         if model_path is not None:
             checkpoint = torch.load(model_path, map_location=self.device)
