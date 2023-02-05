@@ -119,55 +119,6 @@ class Detection:
         else:
             return boxes_list
 
-class Detection1:
-    def __init__(self, config_path=None, weight_path=None, model_name=None):
-        if config_path is None:
-            config_path = 'tool/config/detection/configs.yaml'
-        config = Config(config_path)
-        self.model_name = model_name
-        if weight_path is None:
-            if self.model_name is None:
-                self.model_name = "pan_resnet18_default"
-            tmp_path = os.path.join(CACHE_DIR, f'{self.model_name}.pth')
-            download_pretrained_weights(self.model_name, cached=tmp_path)
-            weight_path = tmp_path
-        self.model = detection.PAN(config, model_path=weight_path)
-        
-    def __call__(
-        self, 
-        image,
-        crop_region=False,
-        return_result=False,
-        output_path=None):
-        
-        """
-        Input: path to image
-        Output: boxes (coordinates of 4 points)
-        """
-
-        if output_path is None:
-            assert crop_region, "Please specify output_path"
-        else:
-            output_path = os.path.join(output_path, 'crops')
-            if os.path.exists(output_path):
-                shutil.rmtree(output_path)
-                os.mkdir(output_path)
-
-            
-        # Detect and OCR for final result
-        _, boxes_list, _ = self.model.predict(
-            image, 
-            output_path, 
-            crop_region=crop_region)
-
-        if return_result:
-            img = detection.draw_bbox(image, boxes_list)
-        
-        if return_result:
-            return boxes_list, img
-        else:
-            return boxes_list
-
 class OCR:
     def __init__(self, config_path=None, weight_path=None, model_name=None):
         if config_path is None:
@@ -211,51 +162,6 @@ class OCR:
             return texts, probs
         else:
             return texts
-
-class OCR1:
-    def __init__(self, config_path=None, weight_path=None, model_name=None):
-        if config_path is None:
-            config_path = 'tool/config/ocr/configs.yaml'
-        config = Config(config_path)
-        ocr_config = ocr.Config.load_config_from_name(config.model_name)
-        ocr_config['cnn']['pretrained']=False
-        ocr_config['device'] = 'cpu'
-        ocr_config['predictor']['beamsearch']=False
-
-        self.model_name = model_name
-        if weight_path is None:
-            if self.model_name is None:
-                self.model_name = "transformerocr_default_vgg"
-            tmp_path = os.path.join(CACHE_DIR, f'{self.model_name}.pth')
-            download_pretrained_weights(self.model_name, cached=tmp_path)
-            weight_path = tmp_path
-        ocr_config['weights'] = weight_path
-        self.model = ocr.Predictor(ocr_config)
-
-    def __call__(self, img, return_prob=False):
-        if isinstance(img, np.ndarray):
-            img = Image.fromarray(img)
-        return self.model.predict(img, return_prob)
-
-    def predict_folder(self, img_paths, return_probs=False):
-        texts = []
-        if return_probs:
-            probs = []
-        for i, img_path in enumerate(img_paths):
-            img = Image.open(img_path)
-            if return_probs:
-                text, prob = self(img, True)
-                texts.append(text)
-                probs.append(prob)
-            else:
-                text = self(img, False)
-                texts.append(text)
-
-        if return_probs:
-            return texts, probs
-        else:
-            return texts
-
 
 class Retrieval:
     def __init__(self, class_mapping, dictionary=None, mode="all", bert_weight=None):
