@@ -57,7 +57,7 @@ class Trainer():
             self.logger = Logger(logger) 
 
         if pretrained:
-            weight_file = download_weights(**config['pretrain'], quiet=config['quiet'])
+            weight_file = download_weights(config['pretrain'], '/tmp/tranformerorc.pth' ,'af6b46e9295eb1c27ca90bddf8c8729a' , quiet=config['quiet'])
             self.load_weights(weight_file)
 
         self.iter = 0
