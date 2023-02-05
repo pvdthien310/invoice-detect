@@ -27,7 +27,7 @@ import time
 
 class Trainer():
     def __init__(self, config, pretrained=True, augmentor=ImgAugTransform()):
-
+        print(config)
         self.config = config
         self.model, self.vocab = build_model(config)
         
